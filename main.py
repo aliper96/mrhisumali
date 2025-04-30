@@ -29,9 +29,9 @@ if __name__ == '__main__':
     val_dataset = MrHiSumDataset(mode='val')
     test_dataset = MrHiSumDataset(mode='test')
 
-    train_loader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True, num_workers=4, collate_fn=BatchCollator())
-    val_loader = DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=4)
-    test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False, num_workers=4)
+    train_loader = DataLoader(train_dataset, batch_size=config.batch_size, shuffle=True, num_workers=0, collate_fn=BatchCollator())
+    val_loader = DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=0)
+    test_loader = DataLoader(test_dataset, batch_size=1, shuffle=False, num_workers=0)
 
     solver = Solver(config, train_loader, val_loader, test_loader)
 

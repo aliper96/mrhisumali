@@ -23,11 +23,11 @@ def getMostReplayed(youtube_id):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--vid", help='youtube video id')
+    parser.add_argument("--vid",default="wq7rSbQx2G8", help='youtube video id')
     args = parser.parse_args()
 
     id = args.vid
     most_replayed_statistics = getMostReplayed(id)
-    with open("dataset/most_replayed.json", "w") as outfile:
+    with open("test_most_replayed.json", "w") as outfile:
         json.dump(most_replayed_statistics, outfile)
 

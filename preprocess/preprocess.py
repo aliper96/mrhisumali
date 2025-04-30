@@ -26,8 +26,8 @@ def align_most_replayed(file_name, random_id, youtube_id, duration):
     return np.array(aligned)
 
 def preprocess(dataset_path):
-    meta_data = "dataset/metadata.csv"
-    h5fd = h5py.File("dataset/mr_hisum.h5", 'a')
+    meta_data = "../dataset/metadata.csv"
+    h5fd = h5py.File("../dataset/mr_hisum.h5", 'a')
     df = pd.read_csv(meta_data)
     
     for row in tqdm(df.itertuples()):
@@ -41,7 +41,7 @@ def preprocess(dataset_path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset_path", help='the path where yt8m dataset exists')
+    parser.add_argument("--dataset_path",default="H:/abyss", help='the path where yt8m dataset exists')
     args = parser.parse_args()
 
     dataset_path = args.dataset_path

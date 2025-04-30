@@ -2,48 +2,35 @@
 import numpy as np
 from scipy import stats
 
-def evaluate_summary(predicted_summary, user_summary, eval_method):
-    """ Compare the predicted summary with the user defined one(s).
-
-    :param ndarray predicted_summary: The generated summary from our model.
-    :param ndarray gt_summary: The user defined ground truth summaries (or summary).
+def evaluate_summary(y_pred, y_true, eval_method='avg'):
     """
+    Calcula F-score, Kendall Tau y Spearman R entre dos resúmenes.
+    y_pred, y_true: vectores 1D o 2D binarios/puntuaciones.
+    """
+    # Aplanar
+    y_pred = np.ravel(y_pred)
+    y_true = np.ravel(y_true)
 
-    # evaluation method for summe and tvsum dataset also applicable on yt8m
-    max_len = max(len(predicted_summary), user_summary.shape[1])
-    S = np.zeros(max_len, dtype=int)
-    G = np.zeros(max_len, dtype=int)
-    S[:len(predicted_summary)] = predicted_summary
-    f_scores = []
-    for user in range(user_summary.shape[0]):
-        G[:user_summary.shape[1]] = user_summary[user]
-        overlapped = S & G
-        # Compute precision, recall, f-score
-        precision = sum(overlapped)/sum(S+1e-8)
-        recall = sum(overlapped)/sum(G+1e-8)
-        # print("max_len", max_len)
-        # print("sum of overlapped", sum(overlapped))
-        # print("sum of S", sum(S))
-        # print("sum of G", sum(G))
-        # print("shape of S", np.array(S).shape)
-        # print("shape of G", np.array(G).shape)
-        # print("precision", precision)
-        # print("recall", recall)
+    # Alinear longitudes si difieren
+    if y_pred.shape[0] != y_true.shape[0]:
+        min_len = min(y_pred.shape[0], y_true.shape[0])
+        y_pred = y_pred[:min_len]
+        y_true = y_true[:min_len]
 
-        if precision+recall == 0:
-            f_scores.append(0)
-        else:
-            f_scores.append((2 * precision * recall * 100) / (precision + recall))
+    if eval_method == 'avg':
+        # F-score (binario, threshold 0.5)
+        tp = np.sum((y_pred > 0.5) & (y_true > 0.5))
+        p  = np.sum(y_pred > 0.5)
+        r  = np.sum(y_true > 0.5)
+        precision = tp / (p + 1e-8)
+        recall    = tp / (r + 1e-8)
+        f_score   = 2 * precision * recall / (precision + recall + 1e-8)
 
-    if eval_method == 'max':
-        f_score_result = max(f_scores)
+        # Kendall Tau
+        kTau = stats.kendalltau(y_pred, y_true)[0]
+        # Spearman R
+        sRho = stats.spearmanr  (y_pred, y_true)[0]
+
+        return f_score, kTau, sRho
     else:
-        f_score_result = sum(f_scores)/len(f_scores)
-    
-    y_pred2=predicted_summary
-    y_true2=user_summary.mean(axis=0)
-    pS=stats.spearmanr(y_pred2,y_true2)[0]
-    kT=stats.kendalltau(stats.rankdata(-np.array(y_true2)), stats.rankdata(-np.array(y_pred2)))[0]
-    
-    return f_score_result, kT, pS
-
+        raise ValueError(f"Método de evaluación desconocido: {eval_method}")
