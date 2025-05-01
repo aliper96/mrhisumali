@@ -71,10 +71,11 @@ def compute_gtscore(pos, heat, duration):
     times = np.arange(duration) / duration
     return np.interp(times, pos, heat)
 
+
 def compute_change_points(features, max_cps=50):
     """
     Detecta límites de shots usando cpd_auto sobre el kernel lineal de features,
-    y se asegura de que siempre haya 0 y N en el array resultante.
+    y devuelve una lista de pares [inicio, fin] para cada segmento.
     """
     # 1) Kernel lineal
     K = features.dot(features.T)
@@ -90,42 +91,50 @@ def compute_change_points(features, max_cps=50):
     cps = np.unique(cps)
     cps = np.sort(cps)
 
-    return cps
+    # 4) Convertir a pares [inicio, fin]
+    segments = []
+    for i in range(len(cps) - 1):
+        segments.append([cps[i], cps[i + 1]])
+
+    return np.array(segments)
+
 
 def compute_gtsummary(gtscore, change_points, budget_ratio=0.15):
     """
     Resuelve la mochila 0/1 para seleccionar shots bajo un presupuesto de tiempo.
     Devuelve un vector binario por segundo indicando resumen.
     """
-    lengths = np.diff(change_points)
-    scores  = [gtscore[change_points[i]:change_points[i+1]].sum()
-               for i in range(len(lengths))]
-    W       = int(budget_ratio * len(gtscore))
-    M       = len(lengths)
+    lengths = change_points[:, 1] - change_points[:, 0]  # Calcular longitud de cada segmento
+    scores = [gtscore[start:end].sum() for start, end in change_points]
+    W = int(budget_ratio * len(gtscore))
+    M = len(lengths)
+
     # Matriz DP
-    Kmat = np.zeros((M+1, W+1))
-    for i in range(1, M+1):
-        for w in range(W+1):
-            if lengths[i-1] <= w:
-                Kmat[i,w] = max(Kmat[i-1,w],
-                                Kmat[i-1,w-lengths[i-1]] + scores[i-1])
+    Kmat = np.zeros((M + 1, W + 1))
+    for i in range(1, M + 1):
+        for w in range(W + 1):
+            if lengths[i - 1] <= w:
+                Kmat[i, w] = max(Kmat[i - 1, w],
+                                 Kmat[i - 1, w - lengths[i - 1]] + scores[i - 1])
             else:
-                Kmat[i,w] = Kmat[i-1,w]
+                Kmat[i, w] = Kmat[i - 1, w]
+
     # Reconstruir selección
-    w        = W
+    w = W
     selected = np.zeros(M, dtype=int)
     for i in range(M, 0, -1):
-        if Kmat[i,w] != Kmat[i-1,w]:
-            selected[i-1] = 1
-            w           -= lengths[i-1]
+        if Kmat[i, w] != Kmat[i - 1, w]:
+            selected[i - 1] = 1
+            w -= lengths[i - 1]
+
     # Expandir a nivel de segundo
-    summary = np.zeros(len(gtscore), dtype=int)
+    summary = np.zeros(len(gtscore), dtype=float)  # Cambiar a float como en el ejemplo deseado
     for i, sel in enumerate(selected):
         if sel:
-            s, e = change_points[i], change_points[i+1]
-            summary[s:e] = 1
-    return summary
+            start, end = change_points[i]
+            summary[start:end] = 1.0
 
+    return summary
 def create_hisum_h5(video_path, heatmap_json_path, video_id, output_path, model_dir, max_secs=300, n_segments=20):
     """
     Crea un archivo H5 con todos los campos requeridos para Mr.HiSum
