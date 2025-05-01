@@ -36,6 +36,8 @@ def extract_yt8m_features(video_path, model_dir, max_secs=300):
         vec = extractor.extract_rgb_frame_features(rgb, apply_pca=True)
         feats.append(vec.astype(np.float32))
 
+    print(feats)
+
     if len(feats) == 0:
         raise ValueError(f"No se extrajo ningún frame de {video_path}")
 

@@ -10,8 +10,8 @@ with h5py.File(r"C:\Users\aliha\Desktop\ABYYS\MR.HiSum\dataset\mr_hisum.h5", 'r'
         gt_summary = dataset['gt_summary'][:]
         gtscore = dataset['gtscore'][:]
 
-        print("change_points:", change_points.shape)
-        print("features:", features)
+        print("change_points:", change_points)
+        # print("features:", features)
         print("gt_summary:", gt_summary)
         print("gtscore:", gtscore)
 
