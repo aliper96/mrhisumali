@@ -99,7 +99,7 @@ def compute_change_points(features, max_cps=50):
     return np.array(segments)
 
 
-def compute_gtsummary(gtscore, change_points, budget_ratio=0.15):
+def compute_gtsummary(gtscore, change_points, budget_ratio=0.40):
     """
     Resuelve la mochila 0/1 para seleccionar shots bajo un presupuesto de tiempo.
     Devuelve un vector binario por segundo indicando resumen.
@@ -196,8 +196,8 @@ def main():
     parser = argparse.ArgumentParser(
         description="Genera archivo H5 para Mr.HiSum a partir de video y heatmap"
     )
-    parser.add_argument("--video", default="C:/Users/aliha/Documents/videoplayback.mp4", help="Ruta al archivo de video")
-    parser.add_argument("--heatmap", default=r"C:\Users\aliha\Documents\wq7rSbQx2G8.json", help="Ruta al archivo JSON de heatmap")
+    parser.add_argument("--video", default=r"C:\Users\aliha\Desktop\ABYYS\MR.HiSum\dataset\abyss\pJs3MN51IQ0\video.mkv", help="Ruta al archivo de video")
+    parser.add_argument("--heatmap", default=r"C:\Users\aliha\Desktop\ABYYS\MR.HiSum\dataset\abyss\pJs3MN51IQ0\pJs3MN51IQ0.json", help="Ruta al archivo JSON de heatmap")
     parser.add_argument("--video_id", default="video2", help="ID del video en el archivo H5")
     parser.add_argument("--output", default="mr_hisum.h5", help="Archivo H5 de salida")
     parser.add_argument("--model_dir", default="inception_weights/", 

@@ -20,8 +20,8 @@ with h5py.File(r"C:\Users\aliha\Desktop\ABYYS\MR.HiSum\dataset\mr_hisum.h5", 'r'
 
 
 with h5py.File(r"C:\Users\aliha\Desktop\ABYYS\MR.HiSum\dataset\mr_ali.h5", 'r') as f:
-    if 'EOedtaUEuKg' in f:
-        dataset = f['EOedtaUEuKg']  # SIN DOS PUNTOS (:)
+    if 'pJs3MN51IQ0' in f:
+        dataset = f['pJs3MN51IQ0']  # SIN DOS PUNTOS (:)
         change_points = dataset['change_points'][:]
         features = dataset['features'][:]
         gt_summary = dataset['gt_summary'][:]

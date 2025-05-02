@@ -16,8 +16,8 @@ if __name__ == '__main__':
     parser.add_argument('--l2_reg', type = float, default = 1e-4, help = 'l2 regularizer')
     parser.add_argument('--dropout_ratio', type = float, default = 0.5, help = 'the dropout ratio')
     parser.add_argument('--batch_size', type = int, default = 256, help = 'the batch size')
-    parser.add_argument('--tag', type = str, default = 'train_scratch', help = 'A tag for experiments')
-    parser.add_argument('--ckpt_path', type = str, default = None, help = 'checkpoint path for inference or weight initialization')
+    parser.add_argument('--tag', type = str, default = 'train_ali1', help = 'A tag for experiments')
+    parser.add_argument('--ckpt_path', type = str, default = r"D:\Downloads\PGL_SUM (1)\pgl_sum1_best_f1.pkl", help = 'checkpoint path for inference or weight initialization')
     parser.add_argument('--train', type=str2bool, default=True, help='when use Train')
 
     opt = parser.parse_args()
