@@ -135,6 +135,9 @@ def compute_gtsummary(gtscore, change_points, budget_ratio=0.15):
             summary[start:end] = 1.0
 
     return summary
+
+
+
 def create_hisum_h5(video_path, heatmap_json_path, video_id, output_path, model_dir, max_secs=300, n_segments=20):
     """
     Crea un archivo H5 con todos los campos requeridos para Mr.HiSum

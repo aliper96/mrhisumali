@@ -10,15 +10,15 @@ from model.solver import Solver
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model', type = str, default = 'MLP', help = 'the name of the model')
+    parser.add_argument('--model', type = str, default = 'PGL_SUM', help = 'the name of the model')
     parser.add_argument('--epochs', type = int, default = 200, help = 'the number of training epochs')
     parser.add_argument('--lr', type = float, default = 5e-5, help = 'the learning rate')
     parser.add_argument('--l2_reg', type = float, default = 1e-4, help = 'l2 regularizer')
     parser.add_argument('--dropout_ratio', type = float, default = 0.5, help = 'the dropout ratio')
     parser.add_argument('--batch_size', type = int, default = 256, help = 'the batch size')
-    parser.add_argument('--tag', type = str, default = 'dev', help = 'A tag for experiments')
+    parser.add_argument('--tag', type = str, default = 'train_scratch', help = 'A tag for experiments')
     parser.add_argument('--ckpt_path', type = str, default = None, help = 'checkpoint path for inference or weight initialization')
-    parser.add_argument('--train', type=str2bool, default='true', help='when use Train')
+    parser.add_argument('--train', type=str2bool, default=True, help='when use Train')
 
     opt = parser.parse_args()
 
